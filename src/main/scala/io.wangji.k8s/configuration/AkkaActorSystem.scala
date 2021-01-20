@@ -9,7 +9,11 @@ object AkkaActorSystem extends StrictLogging {
         Managed.make{
             Task.effect {
                 logger.info("ActorSystem acquisition")
-                ActorSystem("my-system")
+                val actorSystem = ActorSystem("my-system")
+                actorSystem.registerOnTermination(() =>
+                    logger.info("ActorSystem is terminating...")
+                )
+                actorSystem
             }
         }{
             sys => Task.fromFuture(_ => {
